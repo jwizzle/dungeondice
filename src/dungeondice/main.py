@@ -48,7 +48,8 @@ async def roll(
     await ctx.send(result)
 
 
-if TOKEN:
-    bot.run(TOKEN)
-else:
-    sys.exit("Missing a discord token. Supply it as environment variable.")
+def start_bot():
+    if TOKEN:
+        bot.run(TOKEN)
+    else:
+        sys.exit("Missing a discord token. Supply it as environment variable.")

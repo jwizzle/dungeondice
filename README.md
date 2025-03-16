@@ -7,7 +7,7 @@ I aim to keep the logic of the bot detached from discord integration. So the pyt
 
 ```
 $ pip install dungeondice
-$ DISCORD_TOKEN="$TOKEN" python -m dungeondice.main
+$ DISCORD_TOKEN="$TOKEN" dungeondice
 ```
 
 ## Roadmap/TODO
