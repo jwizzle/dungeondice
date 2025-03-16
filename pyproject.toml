@@ -17,6 +17,10 @@ classifiers = [
 ]
 license = "GPL-3.0-or-later"
 license-files = ["LICEN[CS]E*"]
+dependencies = [
+  "discord.py==2.5.2",
+  "python-dotenv==1.0.1",
+]
 
 [project.urls]
 Homepage = "https://github.com/jwizzle/dungeondice"
@@ -24,7 +28,3 @@ Issues = "https://github.com/jwizzle/dungeondice/issues"
 
 [tool.hatch.commands]
 dungeondice = "dungeondice.main"
-
-[tool.hatch.dependencies]
-discord.py = "^2.5.2"
-python-dotenv = "^1.0.1"
