@@ -20,8 +20,8 @@ import random
 # 100d
 # 5d10l6
 
-dicequant = r'[+\-,x]?\d*(d\d+)?(kl?\d*)?'
-set_finder = r'([+\-,x]?\d*d?\d+k?l?\d*)'
+dicequant = r'[+\-,x]?\d*(d\d+)?(kl?\d*)?(\(\w+\))?'
+set_finder = r'([+\-,x]?\d*d?\d+k?l?\d*\(?\w*\)?)'
 rollstring_re = re.compile(r"({dicequant})*".format(
     dicequant=dicequant
 ))
@@ -37,7 +37,8 @@ class rollstring(str):
 class Rollset():
     """Represent one single set of rolled dice (2d20k1)"""
 
-    def __init__(self, dicestring, quant, dice, keep, keep_highest):
+    def __init__(self, dicestring, quant, dice, keep, keep_highest,
+                 comment=''):
         self.rollstring = dicestring
         self.quant = quant
         self.dice = dice
@@ -45,12 +46,14 @@ class Rollset():
         self.keep_highest = keep_highest
         self.rolled_dice = []
         self.total = None
+        self.comment = comment
 
     def roll(self, fumble=None):
         """Roll this group."""
         if self.quant == 0:
             self.rolled_dice = [int(self.rollstring)]
             self.total = int(self.rollstring)
+            self.comment = "{}{}".format(self.total, self.comment)
         else:
             if not fumble:
                 rolled_dice = [
@@ -64,13 +67,22 @@ class Rollset():
 
             self.rolled_dice = rolled_dice
             self.total = sum(self.rolled_dice[:self.keep_amount])
+            self.comment = "{}{}".format(self.total, self.comment)
 
     @classmethod
     def from_string(cls, dicestring):
         """Create a rollgroup from a string."""
+        commentmatch = re.search(r'\(\w+\)', dicestring)
+        if commentmatch:
+            comment = commentmatch.group()
+            dicestring = dicestring.replace(comment, '')
+            comment = comment.replace('(', '').replace(')', '')
+        else:
+            comment = ''
+
         if dicestring.isdigit():
             return cls(
-                dicestring, 0, 0, 0, False
+                dicestring, 0, 0, 0, False, comment=comment
             )
 
         highest = False
@@ -91,7 +103,7 @@ class Rollset():
             dice = int(rest)
 
         return cls(
-            dicestring, quant, dice, keep, highest
+            dicestring, quant, dice, keep, highest, comment=comment
         )
 
     def __repr__(self):
@@ -101,8 +113,8 @@ class Rollset():
         else:
             keepstr = ''
 
-        return "{}{}".format(
-            self.rolled_dice, keepstr)
+        return "{}{}**{}**".format(
+            self.rolled_dice, keepstr, self.comment)
 
     def __eq__(self, other):
         if (

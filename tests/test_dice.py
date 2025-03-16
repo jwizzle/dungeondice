@@ -16,6 +16,10 @@ from dungeondice.lib import dice
         dice.Rollgroup.from_string('d20'),
         dice.Rollgroup.from_string('d20'),
     ]),
+    ('2xd20(piercing)', [
+        dice.Rollgroup.from_string('d20(piercing)'),
+        dice.Rollgroup.from_string('d20(piercing)'),
+    ]),
     ('2xd20,2d20', [
         dice.Rollgroup.from_string('d20'),
         dice.Rollgroup.from_string('d20'),
@@ -45,6 +49,7 @@ def test_parser(rollstring, expected):
     ('d20+5+d10', 9),
     ('d20-1+d10', 3),
     ('d20-1+2d10', 5),
+    ('d20-1(piercing)+2d10(poison)', 5),
 ])
 def test_rollgroups(rollstring, expected_result):
     """Test creating and rolling rollgroups.
@@ -62,6 +67,7 @@ def test_rollgroups(rollstring, expected_result):
     ('2d20k1', dice.Rollset('2d20k1', 2, 20, 1, True), 2),
     ('2d20kl1', dice.Rollset('2d20kl1', 2, 20, 1, False), 2),
     ('2', dice.Rollset('2', 0, 0, 0, False), 2),
+    ('2d20k1(poison)', dice.Rollset('2d20k1', 2, 20, 1, True), 2),
 ])
 def test_rollsets(rollstring, expected_rollset, expected_result):
     """Test creating and rolling rollsets.
