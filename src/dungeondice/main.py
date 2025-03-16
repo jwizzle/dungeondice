@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 import os
+import sys
 from dotenv import load_dotenv
 
 from dungeondice.lib import dice
@@ -50,4 +51,4 @@ async def roll(
 if TOKEN:
     bot.run(TOKEN)
 else:
-    exit(1)
+    sys.exit("Missing a discord token. Supply it as environment variable.")
