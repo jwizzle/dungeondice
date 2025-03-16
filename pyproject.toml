@@ -24,3 +24,7 @@ Issues = "https://github.com/jwizzle/dungeondice/issues"
 
 [tool.hatch.commands]
 dungeondice = "dungeondice.main"
+
+[tool.hatch.dependencies]
+discord.py = "^2.5.2"
+python-dotenv = "^1.0.1"
