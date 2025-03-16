@@ -1,3 +1,5 @@
+[![Upload Python Package](https://github.com/jwizzle/dungeondice/actions/workflows/python-publish.yml/badge.svg)](https://github.com/jwizzle/dungeondice/actions/workflows/python-publish.yml)
+
 # Dungeondice
 
 This is a discord bot that aims to become a feature-rich yet easy to use option for rolling dice for TTRPG's online.
