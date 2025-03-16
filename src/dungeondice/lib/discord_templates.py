@@ -2,7 +2,7 @@
 from dungeondice.lib import dice
 
 
-def dicerolls(rollgroups: list[dice.Rollgroup]):
+def dicerolls(author: str, rollgroups: list[dice.Rollgroup], comment: str):
     out = ''
     for rg in rollgroups:
         out += '''\
@@ -13,5 +13,6 @@ _Details: {}_
 '''.format(rg.rollstring, rg.total, rg.rollsets)
 
     return '''\
+{} rolled {}
 {}
-'''.format(out)
+'''.format(author, comment, out)

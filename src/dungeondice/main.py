@@ -36,13 +36,19 @@ async def on_ready():
 async def roll(
     ctx,
     dicestring: str,
+    *, message: str
 ):
     """Uses the diceparser to roll dice."""
     try:
-        result = discord_templates.dicerolls(diceparser.parse(dicestring))
+        requester = ctx.author
+
+        result = discord_templates.dicerolls(
+            requester.display_name, diceparser.parse(dicestring), message
+        )
     except ValueError:
         result = "Invalid dicestring."
-    except Exception:
+    except Exception as exc:
+        print(exc)
         result = "Error while rolling."
 
     await ctx.send(result)
