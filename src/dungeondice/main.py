@@ -36,7 +36,7 @@ async def on_ready():
 async def roll(
     ctx,
     dicestring: str,
-    *, message: str
+    *, message: str = ''
 ):
     """Uses the diceparser to roll dice."""
     try:
