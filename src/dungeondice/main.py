@@ -58,23 +58,24 @@ d20,d20:       Roll a d20 twice. Returning two different groups with their
 )
 async def roll(
     ctx,
-    dicestring: str,
+    dicestring: dice.rollstring,
     *, message: str = ''
 ):
     """Uses the diceparser to roll dice."""
-    try:
-        requester = ctx.author
-
-        result = discord_templates.dicerolls(
-            requester.display_name, diceparser.parse(dicestring), message
+    await ctx.send(
+        discord_templates.dicerolls(
+            ctx.author.display_name, diceparser.parse(dicestring), message
         )
-    except ValueError:
-        result = "Invalid dicestring."
-    except Exception as exc:
-        print(exc)
-        result = "Error while rolling."
+    )
 
-    await ctx.send(result)
+
+@roll.error
+async def roll_error(ctx, error):
+    if isinstance(error, commands.BadArgument):
+        await ctx.send('Invalid dicestring.')
+    else:
+        print(error)
+        await ctx.send('Uncaught error while rolling.')
 
 
 def start_bot():

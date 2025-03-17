@@ -22,4 +22,5 @@ Run the bot, see the `help` command for more details.
 - ~~Add comments to a roll as a whole with `2d20k1+5 # This is a comment that applies to the complete roll`~~
 - ~~Add hints to parts of a roll `1d6(poison)+1d10(piercing)+5(bludgeoning) # This is a comment that applies to the complete roll`~~
 - Private rolling for DM's
+  - As part of this, probably start using cogs, split off bot commands to separate files/classes
 - Templating of rolls per player/discord channel
