@@ -1,25 +1,13 @@
 #!/usr/bin/env python3
 import re
 import random
-# Theory:
-# 4x4d6kl1 -> roll 4 separate sets of 4d6 with disadvantage
-# 3d6kl1+2d6 -> roll 3d6 keep lowest, add to 2d6. 3d6 total
-# 1d6,4d6 -> roll 2 separate sets
-#
-# should match the dicequant:
-# 1d10
-# 100d1000
-# d20
-# 1d10kl1
-# 100d1000k10
-# d20kl1000
-# 10
-#
-# Should not match the dicequant
-# 1d
-# 100d
-# 5d10l6
 
+# The dicequant and rollstring_re are used together for initial parsing of
+# rollstrings. They decide whether the complete rollstring is something
+# We will try handling at all.
+# The set_finder is slightly different, to facillitate finding different
+# sets within a group of dice.
+# See the "Parser()" for more info on this.
 dicequant = r'[+\-,x]?\d*(d\d+)?(kl?\d*)?(\(\w+\))?'
 set_finder = r'([+\-,x]?\d*d?\d+k?l?\d*\(?\w*\)?)'
 rollstring_re = re.compile(r"({dicequant})*".format(
@@ -35,7 +23,11 @@ class rollstring(str):
 
 
 class Rollset():
-    """Represent one single set of rolled dice (2d20k1)"""
+    """Represent one single set of rolled dice (2d20k1)
+
+    A set contains one or more dice. Or a single integer for flat bonusses.
+    Use 'k' or 'kl' to keep the highest or lowest rolls within a set.
+    """
 
     def __init__(self, dicestring, quant, dice, keep, keep_highest,
                  comment=''):
@@ -129,7 +121,11 @@ class Rollset():
 
 
 class Rollgroup():
-    """Represent one group of rolled dice (2d20k1+4+d20)"""
+    """Represent one group of rolled dice (2d20k1+4+d20)
+
+    A group contains one or more sets of dice, or integers. With either
+    + or - modifiers to signal whether they add or substract from the total.
+    """
 
     def __init__(self, dicestring, additions, substractions, rollsets):
         self.rollstring = dicestring
@@ -188,6 +184,22 @@ class Parser():
     The parser should only be concerned with dice. Not with how we want
     to present those to whatever application will be used to implement
     this module.
+
+    Rolls consist of multiple layers. The parser first cuts up rollstrings
+    into multiple 'groups' of 'sets' by parsing all the x and , modifiers.
+    The 'x' being a multiplier that creates multiple of the same rollgroups.
+    The ',' being a separator that allows you to create multiple different
+    groups in one go.
+    Everything behind the 'x' modifier is treated as part of the multiplier
+    until terminated by a ','.
+
+    Examples:
+    2xd20+d10:     Roll d20+d10 twice. Returning two different groups with
+                   their own totals.
+    d20,d20:       Roll a d20 twice. Returning two different groups with their
+                   own totals. In this case it being the total of 1 dice.
+    2xd20+d10,d10: Roll d20+d10 twice, roll d10 once. Returning three different
+                   groups with their own totals.
     """
 
     def handle_multiplier(self, dicestring):

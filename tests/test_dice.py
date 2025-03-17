@@ -25,16 +25,24 @@ from dungeondice.lib import dice
         dice.Rollgroup.from_string('d20'),
         dice.Rollgroup.from_string('2d20'),
     ]),
+    ('2x2d20(poison)+d8(piercing)+d20', [
+        dice.Rollgroup.from_string('2d20(poison)+d8(piercing)+d20'),
+        dice.Rollgroup.from_string('2d20(poison)+d8(piercing)+d20'),
+    ]),
     # Should fail
     ('1d', False),
     ('100d', False),
     ('5d10l6', False),
+    ('d8(piercing))', False),
+    ('d8(())piercing))', False),
+    ('2xd20xd20', False),
+    ('2xd202xd20', False),
 ])
 def test_parser(rollstring, expected):
     """Test our rolling 'templating'.
 
-    We are being 'smart' here and inject code so we always roll a 2. So we can
-    test the logic instead of the randomness.
+    These tests onlt concern themselves with 'does this rollstring parse'.
+    Rolling logic is tested in more specific tests.
     """
     parser = dice.Parser()
 
@@ -50,6 +58,7 @@ def test_parser(rollstring, expected):
     ('d20-1+d10', 3),
     ('d20-1+2d10', 5),
     ('d20-1(piercing)+2d10(poison)', 5),
+    ('d20-d10(poison)', 0),
 ])
 def test_rollgroups(rollstring, expected_result):
     """Test creating and rolling rollgroups.
@@ -79,3 +88,12 @@ def test_rollsets(rollstring, expected_rollset, expected_result):
 
     rollset.roll(fumble=2)
     assert rollset.total == expected_result
+
+
+@pytest.mark.parametrize("rollstring,expected", [
+    ('2d20k1(poison)', 'poison'),
+])
+def test_comments(rollstring, expected):
+    """Test adding comments to a rollset."""
+    rollset = dice.Rollset.from_string(rollstring)
+    assert rollset.comment == expected

@@ -12,6 +12,10 @@ $ pip install dungeondice
 $ DISCORD_TOKEN="$TOKEN" dungeondice
 ```
 
+## Usage
+
+Run the bot, see the `help` command for more details.
+
 ## Roadmap/TODO
 
 - ~~Initial parsing/rolling~~

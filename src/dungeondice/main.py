@@ -32,7 +32,30 @@ async def on_ready():
         print('Something is seriously wrong with this bot.')
 
 
-@bot.command(name='roll', aliases=['r'])
+@bot.command(
+    name='roll',
+    aliases=['r'],
+    description='roll',
+    brief='example: "2x2d20(poison)+d8(piercing)-4"',
+    help='''Roll dice in a format like "2x2d20(poison)+d8(piercing)-4"
+
+Rolls consist of multiple layers. The parser first cuts up rollstrings
+into multiple 'groups' of 'sets' by parsing all the x and , modifiers.
+The 'x' being a multiplier that creates multiple of the same rollgroups.
+The ',' being a separator that allows you to create multiple different
+groups in one go.
+Everything behind the 'x' modifier is treated as part of the multiplier
+until terminated by a ','.
+
+Examples:
+2xd20+d10:     Roll d20+d10 twice. Returning two different groups with
+                their own totals.
+d20,d20:       Roll a d20 twice. Returning two different groups with their
+                own totals. In this case it being the total of 1 dice.
+2xd20+d10,d10: Roll d20+d10 twice, roll d10 once. Returning three different
+                groups with their own totals.
+''',
+)
 async def roll(
     ctx,
     dicestring: str,
