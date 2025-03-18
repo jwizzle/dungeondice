@@ -19,3 +19,11 @@ _Details: {}_
 **{}** rolled {}
 {}
 '''.format(author, comment, out)
+
+
+def privatemessage(author: str, message: str):
+    message = "__{}__".format(message) if message else message
+
+    return "**{}** rolled {}".format(
+        author, message
+    )

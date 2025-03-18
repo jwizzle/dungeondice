@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import discord
 from discord.ext import commands
+from discord import app_commands
 
 from dungeondice.lib import dice
 from dungeondice.discord import templates
@@ -15,7 +17,7 @@ class Roll(commands.Cog):
         name='roll',
         aliases=['r'],
         description='roll',
-        brief='example: "2x2d20(poison)+d8(piercing)-4"',
+        brief='Roll some dice.',
         help='''Roll dice in a format like "2x2d20(poison)+d8(piercing)-4"
 
 Rolls consist of multiple layers. The parser first cuts up rollstrings
@@ -48,6 +50,110 @@ d20,d20:       Roll a d20 twice. Returning two different groups with their
                 self.diceparser.parse(dicestring),
                 message
             )
+        )
+
+    @commands.command(
+        name='rollprivate',
+        aliases=['rp'],
+        description='roll privately, but let others know you are rolling.',
+        brief='Roll some dice without exposing the results to others.',
+        help='''Roll privately. But let others know you are doing so.
+
+Works exactly like normal rolling. But let's you hide the result.
+Reults are posted in DM. Use slashcommands (/rp) if you want to see
+hidden messages in the channel you're rolling in.
+''',
+    )
+    async def rollprivate(
+        self,
+        ctx,
+        dicestring: dice.rollstring,
+        *, message: str = ''
+    ):
+        """Uses the diceparser to roll dice."""
+        await ctx.author.send(
+            templates.dicerolls(
+                ctx.author.display_name,
+                self.diceparser.parse(dicestring),
+                message,
+            )
+        )
+        await ctx.send(
+            templates.privatemessage(
+                ctx.author.display_name,
+                message,
+            )
+        )
+
+    @app_commands.command(
+        name='r',
+        description='roll, but with a slashcommand.',
+    )
+    async def r(
+        self,
+        interaction: discord.Interaction,
+        message: str,
+    ):
+        """Uses the diceparser to roll dice."""
+        dicestring, *rest = message.split(maxsplit=1)
+        message = rest[0] if rest else ''
+
+        await interaction.response.send_message(
+            templates.dicerolls(
+                interaction.user.display_name,
+                self.diceparser.parse(dicestring),
+                message,
+            ),
+        )
+
+    @app_commands.command(
+        name='rp',
+        description='roll privately, but let others know you are rolling.',
+    )
+    async def rp(
+        self,
+        interaction: discord.Interaction,
+        message: str,
+    ):
+        """Uses the diceparser to roll dice."""
+        dicestring, *rest = message.split(maxsplit=1)
+        message = rest[0] if rest else ''
+
+        await interaction.response.send_message(
+            templates.dicerolls(
+                interaction.user.display_name,
+                self.diceparser.parse(dicestring),
+                message,
+            ),
+            ephemeral=True,
+        )
+        await interaction.followup.send(
+            templates.privatemessage(
+                interaction.user.display_name,
+                message,
+            )
+        )
+
+    @app_commands.command(
+        name='ri',
+        description='roll invisibly, do not let others know you are rolling.',
+    )
+    async def ri(
+        self,
+        interaction: discord.Interaction,
+        message: str,
+    ):
+        """Uses the diceparser to roll dice."""
+        dicestring, *rest = message.split(maxsplit=1)
+        message = rest[0] if rest else ''
+
+        await interaction.response.send_message(
+            templates.dicerolls(
+                interaction.user.display_name,
+                self.diceparser.parse(dicestring),
+                message,
+            ),
+            ephemeral=True,
         )
 
     async def cog_command_error(self, ctx, error):
