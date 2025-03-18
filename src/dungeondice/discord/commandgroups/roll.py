@@ -85,6 +85,33 @@ hidden messages in the channel you're rolling in.
             )
         )
 
+    @commands.command(
+        name='rollinvisible',
+        aliases=['ri'],
+        description='roll invisibly, do not let others know you are rolling.',
+        brief='Roll some dice without exposing the results to others.',
+        help='''Roll privately. do not let others know you are doing so.
+
+Works exactly like normal rolling. But let's you hide the result.
+Reults are posted in DM. Use slashcommands (/ri) if you want to see
+hidden messages in the channel you're rolling in.
+''',
+    )
+    async def rollinvisible(
+        self,
+        ctx,
+        dicestring: dice.rollstring,
+        *, message: str = ''
+    ):
+        """Uses the diceparser to roll dice."""
+        await ctx.author.send(
+            templates.dicerolls(
+                ctx.author.display_name,
+                self.diceparser.parse(dicestring),
+                message,
+            )
+        )
+
     @app_commands.command(
         name='r',
         description='roll, but with a slashcommand.',
