@@ -6,7 +6,7 @@ from dungeondice.lib import dice
 from dungeondice.lib import discord_templates
 
 
-class Rollcommands(commands.Cog):
+class Roll(commands.Cog):
 
     def __init__(self):
         self.diceparser = dice.Parser()

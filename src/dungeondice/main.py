@@ -7,7 +7,7 @@ import os
 import sys
 from dotenv import load_dotenv
 
-from dungeondice.lib.discord.rollcommands import Rollcommands
+from dungeondice.discord import commandgroups
 
 
 load_dotenv()
@@ -28,7 +28,7 @@ async def on_ready():
     else:
         print('Something is seriously wrong with this bot.')
 
-    await bot.add_cog(Rollcommands())
+    await bot.add_cog(commandgroups.Roll())
 
 
 def start_bot():
