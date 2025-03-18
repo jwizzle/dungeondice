@@ -3,7 +3,7 @@
 from discord.ext import commands
 
 from dungeondice.lib import dice
-from dungeondice.lib import discord_templates
+from dungeondice.discord import templates
 
 
 class Roll(commands.Cog):
@@ -43,7 +43,7 @@ d20,d20:       Roll a d20 twice. Returning two different groups with their
     ):
         """Uses the diceparser to roll dice."""
         await ctx.send(
-            discord_templates.dicerolls(
+            templates.dicerolls(
                 ctx.author.display_name,
                 self.diceparser.parse(dicestring),
                 message
