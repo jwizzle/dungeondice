@@ -99,6 +99,11 @@ class Rollset():
         )
 
     def __repr__(self):
+        if len(self.rolled_dice) > 100:
+            rolled_dice = "[Lots of dice]"
+        else:
+            rolled_dice = self.rolled_dice
+
         if self.quant != self.keep_amount:
             keepstr = 'k' if self.keep_highest else 'kl'
             keepstr += str(self.keep_amount)
@@ -106,7 +111,7 @@ class Rollset():
             keepstr = ''
 
         return "{}{}**{}**".format(
-            self.rolled_dice, keepstr, self.comment)
+            rolled_dice, keepstr, self.comment)
 
     def __eq__(self, other):
         if (
