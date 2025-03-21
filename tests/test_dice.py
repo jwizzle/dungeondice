@@ -71,19 +71,19 @@ def test_rollgroups(rollstring, expected_result):
 
 
 @pytest.mark.parametrize("rollstring,expected_rollset,expected_result", [
-    ('d20', dice.Rollset('d20', 1, 20, 1, False), 2),
-    ('2d20', dice.Rollset('2d20', 2, 20, 2, False), 4),
-    ('2d20k1', dice.Rollset('2d20k1', 2, 20, 1, True), 2),
-    ('2d20kl1', dice.Rollset('2d20kl1', 2, 20, 1, False), 2),
-    ('2', dice.Rollset('2', 0, 0, 0, False), 2),
-    ('2d20k1(poison)', dice.Rollset('2d20k1', 2, 20, 1, True), 2),
+    ('d20', dice.Rollset('d20', 1, 20, 1, False, False), 2),
+    ('2d20', dice.Rollset('2d20', 2, 20, 2, False, False), 4),
+    ('2d20k1', dice.Rollset('2d20k1', 2, 20, 1, True, False), 2),
+    ('2d20kl1', dice.Rollset('2d20kl1', 2, 20, 1, False, False), 2),
+    ('2', dice.Rollset('2', 0, 0, 0, False, False), 2),
+    ('2d20k1(poison)', dice.Rollset('2d20k1', 2, 20, 1, True, False), 2),
 ])
 def test_rollsets(rollstring, expected_rollset, expected_result):
     """Test creating and rolling rollsets.
 
     We fumble rolls with a 2 to check totals.
     """
-    rollset = dice.Rollset.from_string(rollstring)
+    rollset = dice.Rollset.from_string(rollstring, False)
     assert rollset == expected_rollset
 
     rollset.roll(fumble=2)
@@ -95,5 +95,5 @@ def test_rollsets(rollstring, expected_rollset, expected_result):
 ])
 def test_comments(rollstring, expected):
     """Test adding comments to a rollset."""
-    rollset = dice.Rollset.from_string(rollstring)
+    rollset = dice.Rollset.from_string(rollstring, False)
     assert rollset.comment == expected

@@ -29,7 +29,7 @@ class Rollset():
     Use 'k' or 'kl' to keep the highest or lowest rolls within a set.
     """
 
-    def __init__(self, dicestring, quant, dice, keep, keep_highest,
+    def __init__(self, dicestring, quant, dice, keep, keep_highest, negative,
                  comment=''):
         self.rollstring = dicestring
         self.quant = quant
@@ -39,13 +39,16 @@ class Rollset():
         self.rolled_dice = []
         self.total = None
         self.comment = comment
+        self.negative = negative
 
     def roll(self, fumble=None):
         """Roll this group."""
+        plusminus = '-' if self.negative else '+'
+
         if self.quant == 0:
             self.rolled_dice = [int(self.rollstring)]
             self.total = int(self.rollstring)
-            self.comment = "{}{}".format(self.total, self.comment)
+            self.comment = "{}{}{}".format(plusminus, self.total, self.comment)
         else:
             if not fumble:
                 rolled_dice = [
@@ -59,10 +62,10 @@ class Rollset():
 
             self.rolled_dice = rolled_dice
             self.total = sum(self.rolled_dice[:self.keep_amount])
-            self.comment = "{}{}".format(self.total, self.comment)
+            self.comment = "{}{}{}".format(plusminus, self.total, self.comment)
 
     @classmethod
-    def from_string(cls, dicestring):
+    def from_string(cls, dicestring, negative):
         """Create a rollgroup from a string."""
         commentmatch = re.search(r'\(\w+\)', dicestring)
         if commentmatch:
@@ -74,7 +77,7 @@ class Rollset():
 
         if dicestring.isdigit():
             return cls(
-                dicestring, 0, 0, 0, False, comment=comment
+                dicestring, 0, 0, 0, False, negative, comment=comment
             )
 
         highest = False
@@ -95,7 +98,7 @@ class Rollset():
             dice = int(rest)
 
         return cls(
-            dicestring, quant, dice, keep, highest, comment=comment
+            dicestring, quant, dice, keep, highest, negative, comment=comment
         )
 
     def __repr__(self):
@@ -166,7 +169,7 @@ class Rollgroup():
             elif set_dicestring[0] == '+':
                 set_dicestring = set_dicestring[1:]
 
-            new_rollset = Rollset.from_string(set_dicestring)
+            new_rollset = Rollset.from_string(set_dicestring, negative)
             rollsets.append(new_rollset)
 
             if negative:
